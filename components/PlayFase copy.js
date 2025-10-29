@@ -20,7 +20,7 @@ const humanizeFeatStatus = (status) => {
   return '—';
 };
 
-// ===== Lógica de agrupamento de alertas =====
+// ===== Alertas =====
 const isFeatureAlert = (a) => a?.raw?.type === 'feature_state';
 const getCpsKey = (a) => a?.cpsId || a?.cpsName || 'unknown';
 const tsOf = (a) => {
@@ -28,21 +28,22 @@ const tsOf = (a) => {
   const n = Number.isFinite(t) ? t : Date.parse(t);
   return Number.isFinite(n) ? n : 0;
 };
-const groupAlertsByCPS = (alerts = []) => {
-  const grouped = alerts.reduce((acc, a) => {
-    const key = getCpsKey(a);
-    (acc[key] ||= []).push(a);
-    return acc;
-  }, {});
-  Object.values(grouped).forEach((list) => list.sort((a, b) => tsOf(b) - tsOf(a)));
-  return grouped;
-};
-const latestAlertPerCPS = (alerts = []) => {
-  const groups = groupAlertsByCPS(alerts);
-  return Object.fromEntries(Object.entries(groups).map(([k, list]) => [k, list[0]]));
+
+// último alerta por CPS+Feature
+const latestAlertPerCpsFeat = (alerts = []) => {
+  const out = {};
+  for (const a of alerts) {
+    if (!isFeatureAlert(a)) continue;
+    const cpsKey = getCpsKey(a);
+    const featKey = a?.raw?.featKey;
+    if (!cpsKey || !featKey) continue;
+    out[cpsKey] ||= {};
+    const prev = out[cpsKey][featKey];
+    if (!prev || tsOf(a) > tsOf(prev)) out[cpsKey][featKey] = a;
+  }
+  return out;
 };
 
-// ===== Componente principal =====
 const PlayFase = () => {
   const {
     addedCPS,
@@ -51,26 +52,20 @@ const PlayFase = () => {
     stopCPSById,
     showCPSDescription,
     acknowledgeAlert,
-    unplugCPS, // 👈 necessário para o botão "Sair"
+    unplugCPS,
   } = useCPSContext();
 
-  // cache de último alerta
-  const latestByCps = useMemo(() => {
-    const featureAlerts = alerts.filter(isFeatureAlert);
-    return latestAlertPerCPS(featureAlerts);
-  }, [alerts]);
+  const latestByCpsFeat = useMemo(() => latestAlertPerCpsFeat(alerts), [alerts]);
 
-  // estado modal
+  // modal
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCpsName, setModalCpsName] = useState('');
   const [modalAlert, setModalAlert] = useState(null);
   const [activeTab, setActiveTab] = useState('details');
 
-  const openDetails = (cps) => {
-    const key = cps.id || cps.nome;
-    const a = latestByCps[key] || null;
-    setModalCpsName(cps.nome);
-    setModalAlert(a);
+  const openDetailsForAlert = (cpsName, alertObj) => {
+    setModalCpsName(cpsName);
+    setModalAlert(alertObj || null);
     setActiveTab('details');
     setModalOpen(true);
   };
@@ -105,105 +100,124 @@ const PlayFase = () => {
     }
   };
 
+  // ===== render =====
   return (
     <div className="component-container play-fase">
       <h2>Play Fase</h2>
 
-      {/* === CPS ATIVOS === */}
       <div className="added-cps-display-play">
         <h3>CPS Ativos:</h3>
         <ul className="cps-list-play">
           {addedCPS.length > 0 ? (
-            addedCPS.map((cps) => (
-              <li
-                key={cps.id}
-                className={`cps-item-play status-${String(cps.status || '').toLowerCase()}`}
-              >
-                <div className="cps-header">
-                  <span className="cps-name">
-                    {cps.nome} — <strong>{cps.status}</strong>
-                  </span>
+            addedCPS.map((cps) => {
+              const cpsKey = cps.id || cps.nome;
+              const alertsForThisCps = latestByCpsFeat[cpsKey] || {};
 
-                  <div className="action-buttons">
-                    <button
-                      onClick={() => stopCPSById(cps.id)}
-                      disabled={cps.status === 'Parado'}
-                      className="stop-btn"
-                    >
-                      Parar
-                    </button>
-                    <button
-                      onClick={() => startCPSById(cps.id)}
-                      disabled={cps.status === 'Rodando'}
-                      className="restart-btn"
-                    >
-                      Reiniciar
-                    </button>
-                    <button
-                      onClick={() => showCPSDescription(cps.nome)}
-                      className="desc-btn"
-                    >
-                      Descrição
-                    </button>
-                    <button
-                      className="restart-btn"
-                      title="Ver detalhes do último alerta deste CPS"
-                      onClick={() => openDetails(cps)}
-                    >
-                      Detalhes
-                    </button>
-                   {/* Sair — só aparece se o CPS estiver Parado */}
-                    {String(cps.status).toLowerCase() === 'parado' && (
+              return (
+                <li
+                  key={cps.id}
+                  className={`cps-item-play status-${String(cps.status || '').toLowerCase()}`}
+                >
+                  <div className="cps-header">
+                    <span className="cps-name">
+                      {cps.nome} — <strong>{cps.status}</strong>
+                    </span>
+
+                    <div className="action-buttons">
                       <button
-                        className="exit-btn"
-                        title="Desligar e remover este CPS"
-                        onClick={() => handleExit(cps)}
+                        onClick={() => stopCPSById(cps.id)}
+                        disabled={cps.status === 'Parado'}
+                        className="stop-btn"
                       >
-                        Sair
+                        Parar
                       </button>
-                    )}  
+                      <button
+                        onClick={() => startCPSById(cps.id)}
+                        disabled={cps.status === 'Rodando'}
+                        className="restart-btn"
+                      >
+                        Reiniciar
+                      </button>
+                      <button
+                        onClick={() => showCPSDescription(cps.nome)}
+                        className="desc-btn"
+                      >
+                        Descrição
+                      </button>
+                      {String(cps.status).toLowerCase() === 'parado' && (
+                        <button
+                          className="exit-btn"
+                          title="Desligar e remover este CPS"
+                          onClick={() => handleExit(cps)}
+                        >
+                          Sair
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>                
 
-                {/* === Funcionalidades === */}
-                <div className="func-table">
-                  <div className="func-table-header">
-                    <div>Funcionalidade</div>
-                    <div>Status</div>
-                    <div>Última atualização</div>
-                    <div>Detalhes</div>
+                  {/* === Funcionalidades === */}
+                  <div className="func-table">
+                    <div className="func-table-header">
+                      <div>Funcionalidade</div>
+                      <div>Status</div>
+                      <div>Última atualização</div>
+                      <div>Detalhes</div>
+                      <div></div>
+                    </div>
+
+                    {(cps.funcionalidades || []).map((f) => {
+                      const human = humanizeFeatStatus(f.statusAtual);
+                      const badgeCls = mapFeatStatusToBadgeClass(f.statusAtual);
+                      const when = f.lastUpdate ? new Date(f.lastUpdate).toLocaleString() : '—';
+                      const details = f.lastDetails
+                        ? Object.entries(f.lastDetails)
+                            .slice(0, 3)
+                            .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+                            .join(' • ')
+                        : '—';
+                      const alertForFeat = alertsForThisCps[f.key];
+                      const showDetailsBtn = Boolean(alertForFeat);
+
+                      // aplica cor de linha conforme status
+                      const statusClass =
+                        f.statusAtual === 'falha'
+                          ? 'func-row-falha'
+                          : f.statusAtual === 'manutencao'
+                          ? 'func-row-manutencao'
+                          : 'func-row-ativo';
+
+                      return (
+                        <div key={f.key} className={`func-row ${statusClass}`}>
+                          <div className="func-name">{f.nome}</div>
+                          <div><span className={badgeCls}>{human}</span></div>
+                          <div className="func-time">{when}</div>
+                          <div className="func-details">{details}</div>
+                          <div className="func-actions">
+                            {showDetailsBtn && (
+                              <button
+                                className="restart-btn"
+                                title="Ver detalhes do último alerta desta funcionalidade"
+                                onClick={() => openDetailsForAlert(cps.nome, alertForFeat)}
+                              >
+                                Detalhes
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-
-                  {(cps.funcionalidades || []).map((f) => {
-                    const human = humanizeFeatStatus(f.statusAtual);
-                    const badgeCls = mapFeatStatusToBadgeClass(f.statusAtual);
-                    const when = f.lastUpdate ? new Date(f.lastUpdate).toLocaleString() : '—';
-                    const details = f.lastDetails
-                      ? Object.entries(f.lastDetails)
-                          .slice(0, 3)
-                          .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
-                          .join(' • ')
-                      : '—';
-
-                    return (
-                      <div key={f.key} className="func-row">
-                        <div className="func-name">{f.nome}</div>
-                        <div><span className={badgeCls}>{human}</span></div>
-                        <div className="func-time">{when}</div>
-                        <div className="func-details">{details}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </li>
-            ))
+                </li>
+              );
+            })
           ) : (
             <li className="no-cps">Nenhum CPS ativo.</li>
           )}
         </ul>
       </div>
 
-      {/* ===== Modal de Detalhes de Alerta ===== */}
+      {/* ===== Modal ===== */}
       {modalOpen && (
         <div className="modal-overlay" role="presentation" onClick={closeModal}>
           <div
@@ -219,7 +233,7 @@ const PlayFase = () => {
 
             {!modalAlert ? (
               <div className="no-alerts" style={{ marginTop: 4 }}>
-                Sem alertas recentes para este CPS.
+                Sem alertas recentes para este CPS/funcionalidade.
               </div>
             ) : (
               <>
@@ -252,12 +266,11 @@ const PlayFase = () => {
                     <div><strong>Detalhes</strong></div>
                     <div className="details-box">
                       {modalAlert.raw?.details
-                        ? Object.entries(modalAlert.raw.details)
-                            .map(([k, v]) => (
-                              <div key={k}>
-                                {k}: {typeof v === 'object' ? JSON.stringify(v) : String(v)}
-                              </div>
-                            ))
+                        ? Object.entries(modalAlert.raw.details).map(([k, v]) => (
+                            <div key={k}>
+                              {k}: {typeof v === 'object' ? JSON.stringify(v) : String(v)}
+                            </div>
+                          ))
                         : '—'}
                     </div>
                   </div>

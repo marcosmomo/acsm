@@ -20,7 +20,7 @@ const MainComponent = () => {
                 </div>
                 <div className="flex-1">
                   <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground text-balance leading-tight">
-                    Arquitetura de Controle para Sistemas de Manufatura
+                    Architecture for Manufacturing Systems
                   </h1>
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">

@@ -126,7 +126,7 @@ const PlugFase = () => {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search by name..."
+          placeholder="Searche for name..."
           value={searchText}
           onChange={handleSearchChange}
           onKeyDown={onInputKeyDown}

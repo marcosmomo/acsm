@@ -10,7 +10,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { cpsDatabase } from '../data/db';
+import { cpsDatabase, initialCPSList } from '../data/db';
 
 const GENERATE_SENSOR_ALERTS = false;
 
@@ -108,6 +108,26 @@ export const CPSProvider = ({ children }) => {
   const [mqttClient, setMqttClient] = useState(null);
   const [mqttData, setMqttData] = useState({});
   const [alerts, setAlerts] = useState([]);
+
+  // Pré-carrega os CPS do banco na Plug Fase (como "Parado")
+  useEffect(() => {
+    // Garante que não duplique caso já haja algo (ex.: hot reload)
+    if (addedCPS.length === 0 && Array.isArray(initialCPSList)) {
+      const preloaded = initialCPSList.map((c) => ({
+        ...c,
+        status: 'Parado', // só passa a "Rodando" quando o usuário iniciar
+      }));
+      setAddedCPS(preloaded);
+      setLog((prev) => [
+        ...prev,
+        {
+          time: new Date().toLocaleTimeString(),
+          message: `[INIT] ${preloaded.length} CPS pré-carregados do banco (status=Parado).`,
+        },
+      ]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // roda uma vez no mount
 
   const addedCPSRef = useRef([]);
   useEffect(() => {
