@@ -103,10 +103,10 @@ const PlayFase = () => {
   // ===== render =====
   return (
     <div className="component-container play-fase">
-      <h2>Play Fase</h2>
+      <h2>Play Phase</h2>
 
       <div className="added-cps-display-play">
-        <h3>CPS Ativos:</h3>
+        <h3>Active CPS:</h3>
         <ul className="cps-list-play">
           {addedCPS.length > 0 ? (
             addedCPS.map((cps) => {
@@ -129,20 +129,20 @@ const PlayFase = () => {
                         disabled={cps.status === 'Parado'}
                         className="stop-btn"
                       >
-                        Parar
+                        Stop
                       </button>
                       <button
                         onClick={() => startCPSById(cps.id)}
                         disabled={cps.status === 'Rodando'}
                         className="restart-btn"
                       >
-                        Reiniciar
+                        Restart
                       </button>
                       <button
                         onClick={() => showCPSDescription(cps.nome)}
                         className="desc-btn"
                       >
-                        Descrição
+                        Description
                       </button>
                       {String(cps.status).toLowerCase() === 'parado' && (
                         <button
@@ -150,7 +150,7 @@ const PlayFase = () => {
                           title="Desligar e remover este CPS"
                           onClick={() => handleExit(cps)}
                         >
-                          Sair
+                          Unplug
                         </button>
                       )}
                     </div>

@@ -236,8 +236,6 @@ export const initialCPSList = [
     descricao:
       'Sistema de visão artificial para inspeção de qualidade em linha, com análise de defeitos, monitoramento de iluminação e performance de processamento.',
     sensores: [
-      'Contagem_Defeitos',
-      'Score_Classificador',
       'Luminosidade_Ambiente',   // lux
       'Temperatura_Camera',      // °C
       'Tempo_Processamento',     // ms
