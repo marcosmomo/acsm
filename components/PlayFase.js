@@ -150,7 +150,7 @@ const PlayFase = () => {
                           title="Desligar e remover este CPS"
                           onClick={() => handleExit(cps)}
                         >
-                          Sair
+                          Unplug
                         </button>
                       )}
                     </div>
