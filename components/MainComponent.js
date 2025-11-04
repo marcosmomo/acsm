@@ -34,7 +34,7 @@ const MainComponent = () => {
           {/* Link alinhado à direita */}
           <div class="container-alinhado">
             <a href="https://dataspace-v2.vercel.app/" target="_blank" class="link-direita">
-              Federação de Dados
+              Data Federation
              </a>
           </div>
         </header>
