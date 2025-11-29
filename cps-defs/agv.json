@@ -1,0 +1,271 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "AGV_Logistico_Zeta",
+      "id": "urn:uuid:75625410-1e61-49ea-a306-774ac34b2e91",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "Asset-Global-ID-CPS-004",
+        "specificAssetIds": [
+          {
+            "name": "assetType",
+            "value": "AGV_Logistico_Zeta"
+          },
+          {
+            "name": "cpsId",
+            "value": "CPS-004"
+          },
+          {
+            "name": "description",
+            "value": "AGV para log\u00EDstica interna com navega\u00E7\u00E3o SLAM, monitoramento de obst\u00E1culos e diagn\u00F3stico de motores em tempo real."
+          }
+        ],
+        "defaultThumbnail": {
+          "path": "/aasx/files/agv.jpeg",
+          "contentType": "image/jpeg"
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:596e6c7e-4bda-4874-8b8f-bf17893924a7"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:a32077ed-92ea-452a-a6ad-76907c21ae26"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:1cdc1ddb-39a5-4c59-95f0-8b8108ec5421"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:327f6771-6828-4956-b301-ef736e9de111"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "DataConnection",
+      "id": "urn:uuid:596e6c7e-4bda-4874-8b8f-bf17893924a7",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "CpsId",
+          "valueType": "xs:string",
+          "value": "CPS-004",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Name",
+          "valueType": "xs:string",
+          "value": "AGV_Logistico_Zeta",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Description",
+          "valueType": "xs:string",
+          "value": "AGV para log\u00EDstica interna com navega\u00E7\u00E3o SLAM, monitoramento de obst\u00E1culos e diagn\u00F3stico de motores em tempo real.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status",
+          "valueType": "xs:string",
+          "value": "Em_Rota",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Operations",
+          "valueType": "xs:string",
+          "value": "Pickup, Delivery, Docking, Desvio de Obst\u00E1culos, Monitoramento de Trilha",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttServer",
+          "valueType": "xs:string",
+          "value": "broker.hivemq.com",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttPort",
+          "valueType": "xs:integer",
+          "value": "8884",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttClient",
+          "valueType": "xs:string",
+          "value": "Python",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttBaseTopic",
+          "valueType": "xs:string",
+          "value": "cps4",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "APIData",
+          "valueType": "xs:string",
+          "value": "localhost:1872/api/cps4",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Sensors",
+      "id": "urn:uuid:a32077ed-92ea-452a-a6ad-76907c21ae26",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "Bateria",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Velocidade",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Posicao_Mapa",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Distancia_Obstaculo",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status_Motor_Tra\u00E7\u00E3o",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Functions",
+      "id": "urn:uuid:1cdc1ddb-39a5-4c59-95f0-8b8108ec5421",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "navegacao",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Navega\u00E7\u00E3o",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Localiza\u00E7\u00E3o e planejamento de rota (SLAM).",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "pickup_delivery",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Pickup \u0026 Delivery",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Aproxima\u00E7\u00E3o, carga e descarga em esta\u00E7\u00F5es.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "docking",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Docking",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Acoplamento em docas de recarga/transfer\u00EAncia.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Datasheet",
+      "id": "urn:uuid:327f6771-6828-4956-b301-ef736e9de111",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ProductDatasheetPdf",
+          "value": "/datasheetAGV_logico_zeta.pdf",
+          "contentType": "application/pdf",
+          "modelType": "File"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ]
+}

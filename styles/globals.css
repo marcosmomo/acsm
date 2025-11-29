@@ -143,6 +143,7 @@ html, body, #__next {
 .no-cps {
     font-style: italic;
     color: #666;
+    font-size: larger;
 }
 
 /* Estilos para o Play Fase */
@@ -699,4 +700,60 @@ html, body, #__next {
 /* Opcional: para garantir que o link se comporte como um bloco completo, se necessário */
 .link-direita {
   display: inline-block; /* Ou 'block' */
+}
+
+.container-alinhado {
+  display: flex;
+  flex-direction: column;  /* botão em cima, link embaixo */
+  align-items: flex-end;   /* tudo alinhado à direita */
+}
+
+/* Opcional: só pra dar um respiro entre o botão e o link */
+.exit-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-bottom: 6px; /* separa do link "Data Federation" */
+}
+.exit-btn:hover {
+  background-color: #dc2626;
+}
+.exit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-direita {
+  display: inline-block;
+}
+
+/* alinhar conteúdo à direita em coluna (botão em cima, link embaixo) */
+.container-alinhado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Botão "Sair" */
+.exit-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-bottom: 6px; /* espaço entre Sair e Data Federation */
+}
+
+.exit-btn:hover {
+  background-color: #dc2626;
+}
+
+.link-direita {
+  display: inline-block;
 }

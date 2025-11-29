@@ -1,0 +1,287 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "SistemaVisao_Qualit",
+      "id": "urn:uuid:3ce50f41-c560-41bc-b02b-93f907ab1f15",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "Asset-Global-ID-CPS-005",
+        "specificAssetIds": [
+          {
+            "name": "assetType",
+            "value": "SistemaVisao_Qualit"
+          },
+          {
+            "name": "cpsId",
+            "value": "CPS-005"
+          },
+          {
+            "name": "description",
+            "value": "Sistema de vis\u00E3o artificial para inspe\u00E7\u00E3o de qualidade em linha, com an\u00E1lise de defeitos, monitoramento de ilumina\u00E7\u00E3o e performance de processamento."
+          }
+        ],
+        "defaultThumbnail": {
+          "path": "/aasx/files/sistemavisao.png",
+          "contentType": "image/png"
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:30032834-b38b-4f49-b804-ffd1665bd959"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:454c8706-156f-4104-a585-c2dde1a05127"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:21d5c794-3a8d-440c-9e39-2653904a01a5"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:60207f15-04f2-4af5-959c-5ea8975ce4d3"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "DataConnection",
+      "id": "urn:uuid:30032834-b38b-4f49-b804-ffd1665bd959",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "CpsId",
+          "valueType": "xs:string",
+          "value": "CPS-005",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Name",
+          "valueType": "xs:string",
+          "value": "SistemaVisao_Qualit",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Description",
+          "valueType": "xs:string",
+          "value": "Sistema de vis\u00E3o artificial para inspe\u00E7\u00E3o de qualidade em linha, com an\u00E1lise de defeitos, monitoramento de ilumina\u00E7\u00E3o e performance de processamento.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status",
+          "valueType": "xs:string",
+          "value": "Inspecionando",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Operations",
+          "valueType": "xs:string",
+          "value": "Inspe\u00E7\u00E3o, Rejei\u00E7\u00E3o autom\u00E1tica, Ajuste de foco din\u00E2mico, Controle de ilumina\u00E7\u00E3o",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttServer",
+          "valueType": "xs:string",
+          "value": "broker.hivemq.com",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttPort",
+          "valueType": "xs:integer",
+          "value": "8884",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttClient",
+          "valueType": "xs:string",
+          "value": "ESP32",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttBaseTopic",
+          "valueType": "xs:string",
+          "value": "cps5",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "APIData",
+          "valueType": "xs:string",
+          "value": "localhost:1872/api/cps5",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Sensors",
+      "id": "urn:uuid:454c8706-156f-4104-a585-c2dde1a05127",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "Luminosidade_Ambiente",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Temperatura_Camera",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAL097#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "\u00B0C"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "0",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Tempo_Processamento",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Foco_Lente",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Taxa_Quadros_Processados",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Functions",
+      "id": "urn:uuid:21d5c794-3a8d-440c-9e39-2653904a01a5",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "inspecao",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Inspe\u00E7\u00E3o de Defeitos",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Classifica\u00E7\u00E3o e medi\u00E7\u00E3o de n\u00E3o-conformidades.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "rejeicao_auto",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Rejei\u00E7\u00E3o Autom\u00E1tica",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Atua\u00E7\u00E3o em esteira para descarte.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "controle_iluminacao",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Controle de Ilumina\u00E7\u00E3o",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Ajuste de intensidade/tempo de estrobos.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Datasheet",
+      "id": "urn:uuid:60207f15-04f2-4af5-959c-5ea8975ce4d3",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ProductDatasheetPdf",
+          "value": "/datasheetSistemaVisao_Qualit.pdf",
+          "contentType": "application/pdf",
+          "modelType": "File"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ]
+}

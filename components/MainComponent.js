@@ -19,7 +19,7 @@ const MainComponent = () => {
             </div>
             <div className="flex-1">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground text-balance leading-tight">
-                Architecture for Manufacturing Systems v1.0
+                Manufacturing Assets Life Cycle Management System V3.0
               </h1>
               <div className="flex items-center gap-2 mt-1.5">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
@@ -34,7 +34,7 @@ const MainComponent = () => {
           {/* Link alinhado à direita */}
           <div class="container-alinhado">
             <a href="https://dataspace-v2.vercel.app/" target="_blank" class="link-direita">
-              Data Federation
+             <h2>Data Federation</h2>
              </a>
           </div>
         </header>

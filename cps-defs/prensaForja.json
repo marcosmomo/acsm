@@ -1,0 +1,283 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "PrensaForja_Smart",
+      "id": "urn:uuid:dc6084ed-df7b-4b3b-ac1d-02f612383ee6",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "Asset-Global-ID-CPS-003",
+        "specificAssetIds": [
+          {
+            "name": "assetType",
+            "value": "PrensaForja_Smart"
+          },
+          {
+            "name": "cpsId",
+            "value": "CPS-003"
+          },
+          {
+            "name": "description",
+            "value": "Prensa de forja com monitoramento de carga, temperatura, vibra\u00E7\u00E3o e alinhamento, voltada para controle adaptativo de processo."
+          }
+        ],
+        "defaultThumbnail": {
+          "path": "/aasx/files/prensaForjaSmt.png",
+          "contentType": "image/png"
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:0e66d925-7e0e-4a0c-90fa-fcecb7d0138d"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:5baf2dd7-e8bb-4c3c-beac-50a1cc1817ec"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:ce8ddf4d-b589-4fcb-8dd4-bb9e9b70afae"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:c72eb154-8e25-46c2-aa0b-384498cd3651"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "DataConnection",
+      "id": "urn:uuid:0e66d925-7e0e-4a0c-90fa-fcecb7d0138d",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "CpsId",
+          "valueType": "xs:string",
+          "value": "CPS-003",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Name",
+          "valueType": "xs:string",
+          "value": "PrensaForja_Smart",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Description",
+          "valueType": "xs:string",
+          "value": "Prensa de forja com monitoramento de carga, temperatura, vibra\u00E7\u00E3o e alinhamento, voltada para controle adaptativo de processo.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status",
+          "valueType": "xs:string",
+          "value": "Aguardando_Carga",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Operations",
+          "valueType": "xs:string",
+          "value": "Ciclo de forja, Resfriamento controlado, Monitoramento de vibra\u00E7\u00E3o e press\u00E3o",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttServer",
+          "valueType": "xs:string",
+          "value": "broker.hivemq.com",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttPort",
+          "valueType": "xs:integer",
+          "value": "8884",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttClient",
+          "valueType": "xs:string",
+          "value": "Node-Red",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttBaseTopic",
+          "valueType": "xs:string",
+          "value": "cps3",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "APIData",
+          "valueType": "xs:string",
+          "value": "localhost:1872/api/cps3",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Sensors",
+      "id": "urn:uuid:5baf2dd7-e8bb-4c3c-beac-50a1cc1817ec",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "Carga_Cilindro",
+          "valueType": "xs:string",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Temperatura_Matriz",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAL097#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "\u00B0C"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "0",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Vibracao_Estrutural",
+          "valueType": "xs:string",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Deslocamento_Pun\u00E7\u00E3o",
+          "valueType": "xs:string",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Pressao_Hidraulica",
+          "valueType": "xs:string",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Functions",
+      "id": "urn:uuid:ce8ddf4d-b589-4fcb-8dd4-bb9e9b70afae",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ciclo_forja",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Ciclo de Forja",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Golpe, recalque e extra\u00E7\u00E3o da pe\u00E7a.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "resfriamento",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Resfriamento Controlado",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Gest\u00E3o de tempo/fluxo para propriedades mec\u00E2nicas.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "monitoramento_condicao",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Monitoramento de Condi\u00E7\u00E3o",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Vibra\u00E7\u00E3o/press\u00E3o para manuten\u00E7\u00E3o preditiva.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Datasheet",
+      "id": "urn:uuid:c72eb154-8e25-46c2-aa0b-384498cd3651",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ProductDatasheetPdf",
+          "value": "/datasheetPrensaForja_Smart.pdf",
+          "contentType": "application/pdf",
+          "modelType": "File"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ]
+}

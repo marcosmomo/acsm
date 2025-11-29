@@ -1,197 +1,142 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+
+import React, { useRef, useState, useMemo } from 'react';
 import { useCPSContext } from '../context/CPSContext';
 
 const PlugFase = () => {
   const {
-    availableCPSNames,
-    addedCPS,
+    availableCPSNames = [],
+    registerCPS,
     addCPS,
-    startCPSById,
+    addedCPS,
+    unplugCPS,
   } = useCPSContext();
 
-  const [searchText, setSearchText] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
-  const [highlightIndex, setHighlightIndex] = useState(-1);
+  const fileInputRef = useRef(null);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const [selectedName, setSelectedName] = useState(null);   
-  const [error, setError] = useState(null);
+  const handlePickFile = () => fileInputRef.current?.click();
 
-  
-  // Refs de UI
-  const inputRef = useRef(null);
-  const inputGroupRef = useRef(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-   useEffect(() => {
-    const onDocMouseDown = (e) => {
-      const group = inputGroupRef.current;
-      if (!group) return;
-      if (!group.contains(e.target)) {
-        setSuggestionsOpen(false);
-        setHighlightIndex(-1);
+    setStatusMsg('');
+    setErrorMsg('');
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const text = String(evt.target?.result || '');
+        const parsed = JSON.parse(text);
+
+        const ok = registerCPS(parsed);
+
+        if (ok) {
+          setStatusMsg('CPS carregado(s) para a Fase Plug.');
+        } else {
+          setErrorMsg('Falha ao carregar CPS para a Fase Plug. Verifique os logs.');
+        }
+      } catch {
+        setErrorMsg('JSON inválido. Use o modelo (AAS) conforme o model.json.');
+      } finally {
+        e.target.value = '';
       }
     };
-    if (typeof document !== 'undefined') {
-      document.addEventListener('mousedown', onDocMouseDown);
-      return () => document.removeEventListener('mousedown', onDocMouseDown);
-    }
-  }, []);
-
-  const updateSuggestions = (value) => {
-    if (value.length > 0) {
-      const q = value.toLowerCase();
-      const filtered = (availableCPSNames || []).filter((name) =>
-        name.toLowerCase().includes(q)
-      );
-      setSuggestions(filtered);
-      setSuggestionsOpen(filtered.length > 0);
-      setHighlightIndex(filtered.length ? 0 : -1);
-    } else {
-      setSuggestions([]);
-      setSuggestionsOpen(false);
-      setHighlightIndex(-1);
-    }
+    reader.onerror = () => {
+      setErrorMsg('Não foi possível ler o arquivo.');
+      e.target.value = '';
+    };
+    reader.readAsText(file);
   };
 
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchText(value);
-    setSelectedName(null);
-    updateSuggestions(value);
-  };
+  // Conjunto com os nomes dos CPS que já estão na Fase Play
+  const cpsNamesInPlay = useMemo(
+    () => new Set((addedCPS || []).map((cps) => cps.nome)),
+    [addedCPS]
+  );
 
-  const handleAddCPS = async (forceName) => {
-    const name = (forceName ?? searchText).trim();
-    if (!name) return;
-
-    try {
-      await Promise.resolve(addCPS(name, { startAfterPlug: false }));
-    } catch (e) {
-      setError(e?.message || 'Falha ao adicionar CPS.');
-      return;
-    } finally {
-      setSearchText('');
-      setSuggestions([]);
-      setSuggestionsOpen(false);
-      setHighlightIndex(-1);
-      setSelectedName(null);
-      inputRef.current?.focus();
-    }
-  };
-
-
-  const handleSelectFromList = (name) => {
-    setSelectedName(name);
-    setSearchText(name);
-    setSuggestionsOpen(false);
-    
-    // Clique = autorização + iniciar operações
-    const target = addedCPS.find((c) => c.nome === name);
-    if (target && String(target.status).toLowerCase() !== 'rodando') {
-      // chama o start e deixa o subscription automático cuidar dos tópicos
-      try { startCPSById(target.id); } catch {}
-    }
-   };
-  
-  const onInputKeyDown = (e) => {
-    if (e.key === 'ArrowDown') {
-      if (!suggestionsOpen && suggestions.length) setSuggestionsOpen(true);
-      setHighlightIndex((i) => Math.min(i + 1, suggestions.length - 1));
-      e.preventDefault();
-    } else if (e.key === 'ArrowUp') {
-      if (!suggestionsOpen && suggestions.length) setSuggestionsOpen(true);
-      setHighlightIndex((i) => Math.max(i - 1, 0));
-      e.preventDefault();
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (suggestionsOpen && highlightIndex >= 0 && suggestions[highlightIndex]) {
-        handleAddCPS(suggestions[highlightIndex]);
-      } else {
-        handleAddCPS();
-      }
-    } else if (e.key === 'Escape') {
-      setSuggestionsOpen(false);
-      setHighlightIndex(-1);
-    }
-  };
-
- 
-  const canSubmitText = Boolean(searchText.trim());
   return (
     <div className="component-container plug-fase">
       <h2>Plug Phase</h2>
 
-      <div className="input-group" ref={inputGroupRef}>
+      {/* Ações principais */}
+      <div className="button-group" style={{ marginBottom: 12 }}>
+        <button type="button" onClick={handlePickFile}>
+          Carregar arquivo JSON
+        </button>
+
         <input
-          ref={inputRef}
-          type="text"
-          placeholder="Search by name..."
-          value={searchText}
-          onChange={handleSearchChange}
-          onKeyDown={onInputKeyDown}
-          className="autocomplete-input"
-          aria-label="Buscar CPS pelo nome"
-          aria-autocomplete="list"
-          aria-expanded={suggestionsOpen}
+          ref={fileInputRef}
+          type="file"
+          accept="application/json"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+          aria-label="Selecionar arquivo JSON de CPS"
         />
-        {suggestionsOpen && suggestions.length > 0 && (
-          <ul className="suggestions-list" role="listbox">
-            {suggestions.map((name, idx) => (
-              <li
-                key={name}
-                role="option"
-                aria-selected={idx === highlightIndex}
-                className={idx === highlightIndex ? 'highlight' : undefined}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleAddCPS(name)}
-                title={`Adicionar ${name}`}
-              >
-                {name}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
-      {error && (
-        <div role="alert" className="error" style={{ marginBottom: 8 }}>
-          {error}
+      {/* Mensagens */}
+      {statusMsg ? (
+        <div className="added-cps-section" role="status">
+          {statusMsg}
         </div>
-      )}
+      ) : null}
 
-      <div className="button-group">
-        <button onClick={() => handleAddCPS()} disabled={!canSubmitText}>
-          Add CPS
-        </button>        
-      </div>
+      {errorMsg ? (
+        <div
+          className="added-cps-section"
+          role="alert"
+          style={{ backgroundColor: '#fdeaea', borderColor: '#f5c2c7' }}
+        >
+          {errorMsg}
+        </div>
+      ) : null}
 
-      {/* REMOVIDO: banner "Selecionado para remover: ... Limpar" */}
-
+      {/* Lista de CPS na Fase Plug */}
       <div className="added-cps-section" style={{ marginTop: 12 }}>
-        <h3>CPS presented:</h3>
+        <h3>CPS na Fase Plug:</h3>
         <ul className="cps-list">
-          {addedCPS.length > 0 ? (
-            addedCPS.map((cps) => {
-              const name = cps.nome;
-              const isSelected = selectedName === name;
+          {availableCPSNames.length ? (
+            availableCPSNames.map((name) => {
+              const inPlay = cpsNamesInPlay.has(name);
+
               return (
-                <li
-                  key={cps.id}
-                  className={`cps-item-plug ${isSelected ? 'selected' : ''} cps-item-plug-row`}
-                  onClick={() => handleSelectFromList(name)}
-                  aria-selected={isSelected}
-                  title={isSelected ? 'Selecionado para remover' : 'Clique para selecionar para remoção'}
-                >
-                  {name} — Status: <strong>{cps.status}</strong>
-                </li>
+                <li key={name} className="cps-item-plug cps-item-plug-row">
+                  {name}
+
+                  {inPlay ? (
+                    <button
+                      className="exit-btn"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => unplugCPS(name)}
+                      title={`Remover ${name} da Fase Play e da arquitetura`}
+                    >
+                      Unplug
+                    </button>
+                  ) : (
+                    <button
+                      className="start-ops-btn"
+                      style={{ marginLeft: 8 }}
+                      // 👇 agora entra em Play já rodando e mandando "iniciar operações"
+                      onClick={() => addCPS(name)} 
+                      // ou: onClick={() => addCPS(name, { startAfterPlug: true })}
+                      title={`Mover ${name} para a Fase Play e iniciar operações`}
+                    >
+                      Play
+                    </button>
+                  )}
+ </li>
               );
             })
           ) : (
-            <li className="no-cps">Nenhum CPS adicionado.</li>
+            <li className="no-cps">
+              Nenhum CPS na Fase Plug. Carregue um JSON primeiro.
+            </li>
           )}
         </ul>
-      </div>      
+      </div>
     </div>
   );
 };

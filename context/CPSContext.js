@@ -1,4 +1,3 @@
-// /context/CPSContext.js
 'use client';
 
 import React, {
@@ -10,14 +9,11 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { cpsDatabase, initialCPSList } from '../data/db';
-
-const GENERATE_SENSOR_ALERTS = false;
 
 const CPSContext = createContext();
 export const useCPSContext = () => useContext(CPSContext);
 
-// Broker WS/WSS
+// Broker WS/WSS (a UI usa WebSocket; o CPS pode publicar por TCP 1883 sem problemas)
 const DEFAULT_BROKER_URL =
   typeof window !== 'undefined' && window.location.protocol === 'https:'
     ? 'wss://broker.hivemq.com:8884/mqtt'
@@ -33,6 +29,9 @@ const ACK_TOPIC_SUFFIX = 'ack';
 const STATUS_TOPIC_SUFFIX = 'status';
 
 const DEBUG_LOG_ALL_TOPICS = true;
+
+// Delay entre aparições de CPS carregados automaticamente (em ms)
+const CPS_AUTOLOAD_DELAY_MS = 3000; // 3 segundos
 
 const normalizeTopic = (t) =>
   String(t || '').replace(/^\/+/, '').replace(/\/+$/, '');
@@ -56,7 +55,7 @@ const parseFeatureStateTopic = (base, incoming) => {
   return null;
 };
 
-// [NEW] – constrói a lista de tópicos para um CPS
+// constrói lista de tópicos para um CPS
 const buildSubscriptionTopicsForCps = (cps) => {
   if (!cps?.topic) return [];
   const [baseNo, baseWith] = topicVariants(cps.topic);
@@ -98,37 +97,160 @@ async function loadMqttConnect() {
 }
 
 export const CPSProvider = ({ children }) => {
+  // ===== Registro (preenchido pelo JSON do Plug) =====
+  const [registry, setRegistry] = useState({}); // { nomeLowerOrId: cpsObj }
+
+  // Nomes disponíveis no Plug (sem duplicados)
   const availableCPSNames = useMemo(
-    () => Object.values(cpsDatabase).map((cps) => cps.nome),
-    []
+    () =>
+      Array.from(
+        new Set(
+          Object.values(registry)
+            .filter(Boolean)
+            .map((cps) => cps.nome)
+        )
+      ),
+    [registry]
   );
 
-  const [addedCPS, setAddedCPS] = useState([]);
+  // ===== Estado geral =====
+  const [addedCPS, setAddedCPS] = useState([]); // CPS plugados (Play)
   const [log, setLog] = useState([]);
   const [mqttClient, setMqttClient] = useState(null);
   const [mqttData, setMqttData] = useState({});
   const [alerts, setAlerts] = useState([]);
 
-  // Pré-carrega os CPS do banco na Plug Fase (como "Parado")
-  useEffect(() => {
-    // Garante que não duplique caso já haja algo (ex.: hot reload)
-    if (addedCPS.length === 0 && Array.isArray(initialCPSList)) {
-      const preloaded = initialCPSList.map((c) => ({
-        ...c,
-        status: 'Parado', // só passa a "Rodando" quando o usuário iniciar
-      }));
-      setAddedCPS(preloaded);
-      setLog((prev) => [
-        ...prev,
-        {
-          time: new Date().toLocaleTimeString(),
-          message: `[INIT] ${preloaded.length} CPS pré-carregados do banco (status=Parado).`,
-        },
-      ]);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // roda uma vez no mount
+  // ===== Registrar CPS a partir do JSON (AAS) =====
+  const registerCPS = useCallback(
+    (parsed) => {
+      try {
+        // DataConnection
+        const smDataConn = (parsed?.submodels || []).find(
+          (sm) => sm?.idShort === 'DataConnection'
+        );
+        if (!smDataConn) throw new Error('Submodel "DataConnection" ausente.');
 
+        const props = Object.fromEntries(
+          (smDataConn.submodelElements || [])
+            .filter((e) => e?.modelType === 'Property')
+            .map((e) => [e.idShort, e.value])
+        );
+
+        const cpsId = props.CpsId || props.cpsId || 'CPS-UNKNOWN';
+        const nome = props.Name || props.name || cpsId;
+        const desc = props.Description || '';
+        const server = props.MqttServer || 'broker.hivemq.com';
+        const base = props.MqttBaseTopic || cpsId; // ex.: "cps1" no seu JSON
+        const topic = String(base).replace(/^\/+|\/+$/g, ''); // sem barras nas pontas
+
+        // Functions -> funcionalidades
+        const smFuncs = (parsed?.submodels || []).find(
+          (sm) => sm?.idShort === 'Functions'
+        );
+        const funcionalidades = [];
+
+        for (const el of smFuncs?.submodelElements || []) {
+          const key = el?.idShort; // ex.: "soldagem"
+          if (!key) continue;
+
+          const dict = Object.fromEntries(
+            (el?.value || [])
+              .filter((e) => e?.modelType === 'Property')
+              .map((e) => [e.idShort, e.value])
+          );
+
+          funcionalidades.push({
+            key,
+            nome: dict.Name || key,
+            descricao: dict.Description || '',
+            allowed: (dict.AllowedStatuses || '').split('|').filter(Boolean),
+            statusAtual: null, // será atualizado por mensagens $state
+            lastUpdate: null,
+            lastDetails: null,
+            topics: {
+              state: `${topic}/feat/${key}/$state`,
+            },
+          });
+        }
+
+        const cpsObj = {
+          id: cpsId,
+          nome,
+          descricao: desc,
+          server,
+          topic, // base pro subscribe/publicar comandos
+          status: 'Parado',
+          funcionalidades,
+        };
+
+        setRegistry((prev) => ({
+          ...prev,
+          [nome.toLowerCase()]: cpsObj,
+          [cpsId.toLowerCase()]: cpsObj,
+        }));
+
+        setLog((prev) => [
+          ...prev,
+          {
+            time: new Date().toLocaleTimeString(),
+            message: `[REGISTER] ${nome} registrado (topic=${topic}, funcionalidades=${funcionalidades.length}).`,
+          },
+        ]);
+
+        return true;
+      } catch (err) {
+        setLog((prev) => [
+          ...prev,
+          {
+            time: new Date().toLocaleTimeString(),
+            message: `[REGISTER_ERROR] ${err?.message || err}`,
+          },
+        ]);
+        return false;
+      }
+    },
+    [setRegistry, setLog]
+  );
+
+  // 🔹 Auto-carrega CPS da API /api/cps ao montar, em "ondas" (3s, 6s, 9s...)
+  useEffect(() => {
+    let timeouts = [];
+
+    const loadCpsFromServer = async () => {
+      try {
+        const res = await fetch('/api/cps');
+        if (!res.ok) throw new Error('Falha ao buscar /api/cps');
+        const data = await res.json();
+        const arr = Array.isArray(data.cps) ? data.cps : [];
+
+        arr.forEach((parsed, index) => {
+          const delay = CPS_AUTOLOAD_DELAY_MS * (index + 1); // 3s, 6s, 9s...
+          const id = setTimeout(() => {
+            registerCPS(parsed);
+          }, delay);
+          timeouts.push(id);
+        });
+      } catch (e) {
+        setLog((prev) => [
+          ...prev,
+          {
+            time: new Date().toLocaleTimeString(),
+            message: `[PLUG_LOAD_ERROR] Falha ao carregar CPS automáticos: ${
+              e?.message || e
+            }`,
+          },
+        ]);
+      }
+    };
+
+    loadCpsFromServer();
+
+    return () => {
+      timeouts.forEach((id) => clearTimeout(id));
+    };
+  }, [registerCPS]);
+
+  // Ponteiro para addedCPS
   const addedCPSRef = useRef([]);
   useEffect(() => {
     addedCPSRef.current = addedCPS;
@@ -187,17 +309,15 @@ export const CPSProvider = ({ children }) => {
           const normIncoming = normalizeTopic(rawTopic);
           const current = addedCPSRef.current;
 
-          // encontra o dono da mensagem
           const owner = current.find((cps) => {
             const base = normalizeTopic(cps.topic);
             return normIncoming === base || normIncoming.startsWith(`${base}/`);
           });
           if (!owner) return;
 
-          // [NEW] – se o CPS está Parado, ignorar qualquer mensagem dele
-          if (String(owner.status).toLowerCase() !== 'rodando') {
-            return;
-          }
+          // 👇 Agora o STOP só afeta a arquitetura:
+          // se o CPS estiver "Parado" na UI, não atualizamos mais nada
+          if (String(owner.status).toLowerCase() !== 'rodando') return;
 
           // 1) Mensagens de funcionalidade ($state)
           const featInfo = parseFeatureStateTopic(owner.topic, normIncoming);
@@ -226,7 +346,7 @@ export const CPSProvider = ({ children }) => {
                   if (f.key !== featInfo.featKey) return f;
                   return {
                     ...f,
-                    statusAtual: ['espera', 'falha', 'manutencao'].includes(statusKey)
+                    statusAtual: ['espera', 'falha', 'manutencao', 'ativo', 'ok', 'rodando'].includes(statusKey)
                       ? statusKey
                       : f.statusAtual ?? null,
                     lastUpdate: ts,
@@ -269,7 +389,7 @@ export const CPSProvider = ({ children }) => {
             return;
           }
 
-          // 2) Fluxos existentes (data/status/ack)
+          // 2) Outros fluxos (data/status/ack) — opcionais
           const isData =
             normIncoming.endsWith(`/${DATA_TOPIC_SUFFIX}`) ||
             normIncoming.includes(`/${DATA_TOPIC_SUFFIX}/`);
@@ -331,8 +451,6 @@ export const CPSProvider = ({ children }) => {
                 cpsName: owner.nome,
                 component: data.component || 'Status',
                 severity: sev,
-                risk_score: undefined,
-                predicted_ttf_hours: undefined,
                 timestamp: data.timestamp || new Date().toISOString(),
                 raw: data,
               };
@@ -355,8 +473,6 @@ export const CPSProvider = ({ children }) => {
                 },
               ]);
             }
-          } else if (isAck) {
-            // opcional: tratar ACK
           }
         });
 
@@ -386,11 +502,10 @@ export const CPSProvider = ({ children }) => {
     };
   }, []);
 
-  // Subscriptions – [NEW] agora só para CPS Rodando
+  // Subscriptions – só para CPS Rodando
   useEffect(() => {
     if (!mqttClient) return;
 
-    // tópicos desejados (apenas rodando)
     const topicsToSubscribe = addedCPS
       .filter((cps) => String(cps.status).toLowerCase() === 'rodando')
       .flatMap(buildSubscriptionTopicsForCps);
@@ -410,63 +525,31 @@ export const CPSProvider = ({ children }) => {
       ]);
     });
 
-    // quando a lista mudar, desinscreve tudo e resinscreve no próximo ciclo
     return () => {
       mqttClient.unsubscribe(uniqueSubs);
     };
-  }, [mqttClient, addedCPS]); // reexecuta se status mudar
+  }, [mqttClient, addedCPS]);
 
-  // ===== Helpers de publicação =====
-  const publishTextCommandAsync = (cps, text) =>
-    new Promise((resolve) => {
-      if (!mqttClient || !cps) return resolve(false);
-      const [baseNo] = topicVariants(cps.topic);
-      const commandTopic = joinTopic(baseNo, COMMAND_TOPIC_SUFFIX);
-      mqttClient.publish(commandTopic, text, { qos: 1 }, (err) => {
-        setLog((prev) => [
-          ...prev,
-          {
-            time: new Date().toLocaleTimeString(),
-            message: err
-              ? `[MQTT_ERRO] Falha ao publicar (${cps.nome})`
-              : `[MQTT_PUB] "${text}" → ${commandTopic}`,
-          },
-        ]);
-        resolve(!err);
-      });
-    });
+  // Ciclo de vida
 
-  const publishTextCommand = (cps, text) => publishTextCommandAsync(cps, text);
-
-  // ===== Ciclo de vida =====
-
-  const clearLog = () => {
-    setLog([]);
-    setLog((prev) => [
-      ...prev,
-      {
-        time: new Date().toLocaleTimeString(),
-        message: '[INFO] Log limpo pelo usuário.',
-      },
-    ]);
-  };
-
+  // CPS entra em Play (pode já entrar "Rodando" ou "Parado", mas não mandamos comando pro CPS)
   const addCPS = (cpsName, options = {}) => {
     const { startAfterPlug = true } = options;
-
     const lower = (cpsName || '').toLowerCase();
-    const fromDB = cpsDatabase[lower];
-    if (!fromDB) {
+    const fromRegistry = registry[lower];
+
+    if (!fromRegistry) {
       setLog((prev) => [
         ...prev,
         {
           time: new Date().toLocaleTimeString(),
-          message: `[ERRO] ${cpsName} não encontrado no banco.`,
+          message: `[ERRO] ${cpsName} não encontrado no registro (carregue o JSON antes).`,
         },
       ]);
       return false;
     }
-    if (addedCPS.some((c) => c.id === fromDB.id)) {
+
+    if (addedCPS.some((c) => c.id === fromRegistry.id)) {
       setLog((prev) => [
         ...prev,
         {
@@ -478,19 +561,18 @@ export const CPSProvider = ({ children }) => {
     }
 
     const initialStatus = startAfterPlug ? 'Rodando' : 'Parado';
-    const cps = { ...fromDB, status: initialStatus };
+    const cps = { ...fromRegistry, status: initialStatus };
     setAddedCPS((prev) => [...prev, cps]);
+
     setLog((prev) => [
       ...prev,
       {
         time: new Date().toLocaleTimeString(),
-        message: `[PLUG] ${cpsName} adicionado. (autoStart=${startAfterPlug})`,
+        message: `[PLAY] ${cpsName} enviado para a Fase Play (autoStart=${startAfterPlug}).`,
       },
     ]);
 
-    if (startAfterPlug) {
-      publishTextCommand(cps, 'iniciar operações');
-    }
+    // 👇 Não envia mais "iniciar operações" para o CPS, só ajusta visão da arquitetura
     return true;
   };
 
@@ -508,7 +590,7 @@ export const CPSProvider = ({ children }) => {
       return false;
     }
     if (mqttClient) {
-      const topics = buildSubscriptionTopicsForCps(removed); // [NEW]
+      const topics = buildSubscriptionTopicsForCps(removed);
       mqttClient.unsubscribe(topics);
       setLog((prev) => [
         ...prev,
@@ -528,38 +610,39 @@ export const CPSProvider = ({ children }) => {
       ...prev,
       {
         time: new Date().toLocaleTimeString(),
-        message: `[PLUG] ${removed.nome} removido.`,
+        message: `[PLAY] ${removed.nome} removido da Fase Play.`,
       },
     ]);
     return true;
   };
 
+  // START: arquitetura passa a observar (não manda start para o CPS)
   const startCPSById = (cpsId) => {
     const cps = addedCPS.find((c) => c.id === cpsId);
     if (!cps) return;
-    publishTextCommand(cps, 'iniciar operações');
     setAddedCPS((prev) =>
       prev.map((c) => (c.id === cpsId ? { ...c, status: 'Rodando' } : c))
     );
-    // [NEW] – não precisa subscrever manualmente; o efeito de subscriptions reagirá à mudança de status
   };
 
+  // STOP: arquitetura para de atualizar/observar (CPS continua gerando)
   const stopCPSById = (cpsId) => {
     const cps = addedCPS.find((c) => c.id === cpsId);
     if (!cps) return;
-    publishTextCommand(cps, 'parar');
+
     setAddedCPS((prev) =>
       prev.map((c) => (c.id === cpsId ? { ...c, status: 'Parado' } : c))
     );
-    // [NEW] – limpa último dado e evita que fique parecendo "ativo"
+
+    // limpa dados atuais daquele CPS (apenas efeito visual na UI)
     setMqttData((prev) => {
       const next = { ...prev };
       delete next[cpsId];
       return next;
     });
-    // [NEW] – o efeito de subscriptions vai desinscrever automaticamente
   };
 
+  // UNPLUG: arquitetura deixa de olhar para esse CPS (CPS continua por conta própria)
   const unplugCPS = async (cpsName) => {
     const lower = (cpsName || '').toLowerCase();
     const removed = addedCPS.find((c) => c.nome.toLowerCase() === lower);
@@ -574,27 +657,37 @@ export const CPSProvider = ({ children }) => {
       return false;
     }
 
-    await publishTextCommandAsync(removed, 'parar');
-    await publishTextCommandAsync(removed, 'unplug');
-    await new Promise((r) => setTimeout(r, 200));
+    // 👇 Não enviamos mais 'parar' ou 'unplug' via MQTT para o CPS
 
     if (mqttClient) {
-      const topics = buildSubscriptionTopicsForCps(removed); // [NEW]
+      const topics = buildSubscriptionTopicsForCps(removed);
       mqttClient.unsubscribe(topics);
     }
 
+    // 1) tira do Play
     setAddedCPS((prev) => prev.filter((c) => c.nome.toLowerCase() !== lower));
+
+    // 2) limpa dados MQTT
     setMqttData((prev) => {
       const x = { ...prev };
       delete x[removed.id];
       return x;
     });
 
+    // 3) tira do Plug (registro)
+    setRegistry((prev) => {
+      const next = { ...prev };
+      delete next[lower];
+      const idKey = (removed.id || '').toLowerCase();
+      if (idKey && next[idKey]) delete next[idKey];
+      return next;
+    });
+
     setLog((prev) => [
       ...prev,
       {
         time: new Date().toLocaleTimeString(),
-        message: `[UNPLUG] ${removed.nome} desligado e removido da arquitetura.`,
+        message: `[UNPLUG] ${removed.nome} removido da arquitetura (CPS segue operando por conta própria).`,
       },
     ]);
 
@@ -618,13 +711,16 @@ export const CPSProvider = ({ children }) => {
           .join(', ');
         const featLine = feats ? ` • Func: [${feats}]` : '';
 
-        // [NEW] – se Parado, deixa claro e não mostra última payload como se estivesse ativo
         if (String(cps.status).toLowerCase() !== 'rodando') {
-          return `${cps.nome} (${cps.server}/${cps.topic}): Parado${featLine ? featLine : ''}`;
+          return `${cps.nome} (${cps.server}/${cps.topic}): Parado${
+            featLine ? featLine : ''
+          }`;
         }
 
         if (currentData && typeof currentData === 'object') {
-          return `${cps.nome} (${cps.server}/${cps.topic}): ${JSON.stringify(currentData)}${featLine}`;
+          return `${cps.nome} (${cps.server}/${cps.topic}): ${JSON.stringify(
+            currentData
+          )}${featLine}`;
         }
         const last = currentData || 'Aguardando...';
         return `${cps.nome} (${cps.server}/${cps.topic}): Última Msg: ${last}${featLine}`;
@@ -658,12 +754,24 @@ export const CPSProvider = ({ children }) => {
     ]);
   };
 
+  const clearLog = () => {
+    setLog([]);
+    setLog((prev) => [
+      ...prev,
+      {
+        time: new Date().toLocaleTimeString(),
+        message: '[INFO] Log limpo pelo usuário.',
+      },
+    ]);
+  };
+
   return (
     <CPSContext.Provider
       value={{
         availableCPSNames,
         addedCPS,
         log,
+        registerCPS,
         addCPS,
         removeCPS,
         startCPSById,
@@ -678,9 +786,13 @@ export const CPSProvider = ({ children }) => {
           const lower = (name || '').toLowerCase();
           const cps =
             addedCPS.find((c) => c.nome.toLowerCase() === lower) ||
-            cpsDatabase[lower];
+            Object.values(registry).find(
+              (c) => c.nome && c.nome.toLowerCase() === lower
+            );
           if (!cps) return false;
-          alert(`CPS: ${cps.nome}\nDescrição: ${cps.descricao || '(sem descrição)'}`);
+          alert(
+            `CPS: ${cps.nome}\nDescrição: ${cps.descricao || '(sem descrição)'}`
+          );
           setLog((prev) => [
             ...prev,
             {

@@ -50,7 +50,7 @@ const PlayFase = () => {
     alerts = [],
     startCPSById,
     stopCPSById,
-    showCPSDescription,
+    // showCPSDescription,  // <== removido pois não é mais usado
     acknowledgeAlert,
     unplugCPS,
   } = useCPSContext();
@@ -138,8 +138,9 @@ const PlayFase = () => {
                       >
                         Restart
                       </button>
+                      {/* === AJUSTE AQUI: carregar HTML externo === */}
                       <button
-                        onClick={() => showCPSDescription(cps.nome)}
+                        onClick={() => window.open('http://localhost:1872/dashboard/overview', '_blank')}
                         className="desc-btn"
                       >
                         Description

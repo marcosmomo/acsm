@@ -690,3 +690,13 @@ html, body, #__next {
   justify-content: flex-end;
   align-items: center;
 }
+
+.container-alinhado {
+  /* text-align: left é o padrão, mas garante o alinhamento do conteúdo inline */
+  text-align: right; 
+}
+
+/* Opcional: para garantir que o link se comporte como um bloco completo, se necessário */
+.link-direita {
+  display: inline-block; /* Ou 'block' */
+}

@@ -1,0 +1,390 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "SortingUnit_50466",
+      "id": "urn:uuid:3c759134-9d80-4324-a3b5-08c3af425504",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "Asset-Global-ID-CPS-009",
+        "specificAssetIds": [
+          {
+            "name": "assetType",
+            "value": "SortingUnit_50466"
+          },
+          {
+            "name": "cpsId",
+            "value": "CPS-009"
+          },
+          {
+            "name": "description",
+            "value": "Unidade de desvio/sorting com correia e comportas laterais para envio de caixas para diferentes rotas."
+          }
+        ],
+        "defaultThumbnail": {
+          "path": "/aasx/files/sportingSmt.png",
+          "contentType": "image/png"
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:7a9c48d9-77a0-4c5e-bff6-0e068d060b30"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:cc158258-4e81-458a-a6c2-479d9b5c65a8"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:8f5f901c-b64a-47b8-b97a-fb1dfd140463"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:b8dae102-f237-4d16-93e0-872a693b34d2"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "DataConnection",
+      "id": "urn:uuid:7a9c48d9-77a0-4c5e-bff6-0e068d060b30",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "CpsId",
+          "valueType": "xs:string",
+          "value": "CPS-009",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Name",
+          "valueType": "xs:string",
+          "value": "SortingUnit_50466",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Description",
+          "valueType": "xs:string",
+          "value": "Unidade de desvio/sorting com correia e comportas laterais para envio de caixas para diferentes rotas.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status",
+          "valueType": "xs:string",
+          "value": "Parado",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Operations",
+          "valueType": "xs:string",
+          "value": "Transporte, desvio de caixas para calha esquerda ou direita e contagem de pe\u00E7as.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttServer",
+          "valueType": "xs:string",
+          "value": "broker.hivemq.com",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttPort",
+          "valueType": "xs:integer",
+          "value": "8884",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttClient",
+          "valueType": "xs:string",
+          "value": "PLC",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttBaseTopic",
+          "valueType": "xs:string",
+          "value": "cps9",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "APIData",
+          "valueType": "xs:string",
+          "value": "localhost:1872/api/cps9",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Sensors",
+      "id": "urn:uuid:cc158258-4e81-458a-a6c2-479d9b5c65a8",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "NominalVoltage_24V",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-BAJ135#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "V"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "24",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "PartCount_Total",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAM445#001"
+              }
+            ]
+          },
+          "valueType": "xs:integer",
+          "value": "0",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "EntrySensor_Photo",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "LeftChute_Photo",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "RightChute_Photo",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MotorTemperature",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAL097#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "\u00B0C"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "0",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Functions",
+      "id": "urn:uuid:8f5f901c-b64a-47b8-b97a-fb1dfd140463",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "conveyor_forward",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Esteira Avan\u00E7ar",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Aciona o motor do transportador principal para frente.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "divert_left",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Desvio Esquerda",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Aciona a comporta para desviar caixas para a calha esquerda.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "divert_right",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Desvio Direita",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Aciona a comporta para desviar caixas para a calha direita.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "detectar_entrada",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Detectar Entrada",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Leitura do sensor de entrada da unidade de sorting.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "detectar_calha_esquerda",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Detectar Calha Esquerda",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Leitura do sensor de presen\u00E7a na calha esquerda.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "detectar_calha_direita",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Detectar Calha Direita",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Leitura do sensor de presen\u00E7a na calha direita.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Datasheet",
+      "id": "urn:uuid:b8dae102-f237-4d16-93e0-872a693b34d2",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ProductDatasheetPdf",
+          "value": "/datasheetSortingUnit_50466.pdf",
+          "contentType": "application/pdf",
+          "modelType": "File"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ]
+}

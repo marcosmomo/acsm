@@ -1,0 +1,287 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "RoboSoldagemAlfa",
+      "id": "urn:uuid:4ae08f82-46a4-4282-abb3-bb62f63476d7",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "Asset-Global-ID-CPS-001",
+        "specificAssetIds": [
+          {
+            "name": "assetType",
+            "value": "RoboSoldagemAlfa"
+          },
+          {
+            "name": "cpsId",
+            "value": "CPS-001"
+          },
+          {
+            "name": "description",
+            "value": "Esta\u00E7\u00E3o de soldagem robotizada de 6 eixos com monitoramento em tempo real da qualidade da junta."
+          }
+        ],
+        "defaultThumbnail": {
+          "path": "/RoboSoldagem.png",
+          "contentType": "image/png"
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:1f422fe8-7f0a-4a6b-9d67-c6fb8e4a2f21"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:569aa635-0f53-4da6-96a6-14d57e7df879"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:7e04cfd6-c64e-4b68-9a3a-d518059c32a0"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:8c1575d0-49b3-4ead-889b-0be182704a54"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "DataConnection",
+      "id": "urn:uuid:1f422fe8-7f0a-4a6b-9d67-c6fb8e4a2f21",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "CpsId",
+          "valueType": "xs:string",
+          "value": "CPS-001",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Name",
+          "valueType": "xs:string",
+          "value": "RoboSoldagemAlfa",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Description",
+          "valueType": "xs:string",
+          "value": "Esta\u00E7\u00E3o de soldagem robotizada de 6 eixos com monitoramento em tempo real da qualidade da junta.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status",
+          "valueType": "xs:string",
+          "value": "Pronto",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Operations",
+          "valueType": "xs:string",
+          "value": "Ajuste Fino de Par\u00E2metros de Solda, Otimiza\u00E7\u00E3o de Trajet\u00F3ria, Inspe\u00E7\u00E3o Autom\u00E1tica P\u00F3s-Solda",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttServer",
+          "valueType": "xs:string",
+          "value": "broker.hivemq.com",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttPort",
+          "valueType": "xs:integer",
+          "value": "8884",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttClient",
+          "valueType": "xs:string",
+          "value": "Node-Red",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttBaseTopic",
+          "valueType": "xs:string",
+          "value": "cps1",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "APIData",
+          "valueType": "xs:string",
+          "value": "localhost:1872/api/cps1",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Sensors",
+      "id": "urn:uuid:569aa635-0f53-4da6-96a6-14d57e7df879",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "Temperatura_Ponta_Solda",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAL097#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "\u00B0C"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "0",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Corrente_Arco_Digital",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Pressao_Gas_Protecao",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Visao_3D_Junta",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Vibracao_Bra\u00E7o_Eixo6",
+          "valueType": "xs:string",
+          "value": "",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Functions",
+      "id": "urn:uuid:7e04cfd6-c64e-4b68-9a3a-d518059c32a0",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "soldagem",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Soldagem",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Controle do arco e execu\u00E7\u00E3o do cord\u00E3o.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "otimizacao_trajetoria",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Otimiza\u00E7\u00E3o de Trajet\u00F3ria",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Ajuste fino de caminho e velocidade do rob\u00F4.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "inspecao_possolda",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Inspe\u00E7\u00E3o P\u00F3s-solda",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "An\u00E1lise de penetra\u00E7\u00E3o e defeitos via vis\u00E3o.",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Datasheet",
+      "id": "urn:uuid:8c1575d0-49b3-4ead-889b-0be182704a54",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ProductDatasheetPdf",
+          "value": "/RoboSoldagemAlfa_datasheet.pdf",
+          "contentType": "application/pdf",
+          "modelType": "File"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ]
+}

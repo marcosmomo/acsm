@@ -1,0 +1,917 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "Transportband_50464",
+      "id": "urn:uuid:e78a68b0-5f21-432d-50464-transportband24v",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "Asset-Global-ID-50464-SN12345",
+        "specificAssetIds": [
+          {
+            "name": "assetType",
+            "value": "Conveyor Belt 24V"
+          },
+          {
+            "name": "manufacturer",
+            "value": "fischertechnik GmbH"
+          },
+          {
+            "name": "eclassClass",
+            "value": "27-14-06-01"
+          },
+          {
+            "name": "cpsId",
+            "value": "CPS-007"
+          },
+          {
+            "name": "description",
+            "value": "Transportador de correia 24V com contagem de pe\u00E7as, monitoramento de temperatura do motor e I/Os digitais para esta\u00E7\u00F5es de alimenta\u00E7\u00E3o/troca."
+          }
+        ],
+        "defaultThumbnail": {
+          "path": "/aasx/files/50464_Stan.png",
+          "contentType": "image/png"
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:68c4e43b-2403-4f96-b072-132b4b23d917"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:7f4a3df3-3d3a-4e2a-b6c9-b5e6b7c5d212"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:2b9f9a55-0a1b-4d0f-9c3e-91f2a9c3a7e1"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:e896d7e7-c63b-43c4-8a30-bd84edbac080"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:2a8657eb-22d6-429e-8ff4-df93f40002a7"
+            }
+          ]
+        },
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "urn:uuid:e63b9c31-345a-4a6f-acf0-189d9af35ccd"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "TechnicalData",
+      "id": "urn:uuid:68c4e43b-2403-4f96-b072-132b4b23d917",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "NominalVoltage",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-BAJ135#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "V"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Rated Value"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "24",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "OperationalData",
+      "id": "urn:uuid:a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "PartCount",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAM445#001"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Measured Value",
+              "valueId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "urn:eclass:0173-1#02-AAB792#001"
+                  }
+                ]
+              }
+            }
+          ],
+          "valueType": "xs:integer",
+          "value": "5678",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MotorTemperature",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAL097#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "\u00B0C"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Measured Value",
+              "valueId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "urn:eclass:0173-1#02-AAB792#001"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:dateTime",
+              "value": "2025-11-12T10:34:00Z"
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "45.8",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Datasheet",
+      "id": "urn:uuid:7f4a3df3-3d3a-4e2a-b6c9-b5e6b7c5d212",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "ProductDatasheetPdf",
+          "value": "/aasx/files/Transportband_24V_V2.pdf",
+          "contentType": "application/pdf",
+          "modelType": "File"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "ControlIO",
+      "id": "urn:uuid:2b9f9a55-0a1b-4d0f-9c3e-91f2a9c3a7e1",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "PowerSupply",
+          "value": [
+            {
+              "idShort": "Actuators_Positive",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 1"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "24V DC",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Sensors_Positive",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 2"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "24V DC",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Ground_0V_A",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 3"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "0V",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Ground_0V_B",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 4"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "0V",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "Inputs",
+          "value": [
+            {
+              "idShort": "I1_FeedStation_Photo",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 5"
+                },
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Signal: I1"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "Phototransistor feed station",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "I2_SwapStation_Photo",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 6"
+                },
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Signal: I2"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "Phototransistor swap station",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "I3_Pulse_Button",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 7"
+                },
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Signal: I3"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "Pulse button",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "Outputs",
+          "value": [
+            {
+              "idShort": "Q1_Conveyor_Forward",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 15"
+                },
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Signal: Q1"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "Motor conveyor belt forward",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Q2_Conveyor_Backward",
+              "qualifiers": [
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Terminal 16"
+                },
+                {
+                  "type": "Qualifier",
+                  "valueType": "xs:string",
+                  "value": "Signal: Q2"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "Motor conveyor belt backward",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "Connector_26_Pin_Header",
+          "value": [
+            {
+              "idShort": "Pin_1",
+              "valueType": "xs:string",
+              "value": "\u002B24V (Actuators)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_2",
+              "valueType": "xs:string",
+              "value": "\u002B24V (Sensors)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_3",
+              "valueType": "xs:string",
+              "value": "0V (GND)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_4",
+              "valueType": "xs:string",
+              "value": "0V (GND)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_5",
+              "valueType": "xs:string",
+              "value": "I1",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_6",
+              "valueType": "xs:string",
+              "value": "I2",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_7",
+              "valueType": "xs:string",
+              "value": "I3",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_8",
+              "valueType": "xs:string",
+              "value": "Not used",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_15",
+              "valueType": "xs:string",
+              "value": "Q1",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_16",
+              "valueType": "xs:string",
+              "value": "Q2",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_17",
+              "valueType": "xs:string",
+              "value": "Not used",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pin_18",
+              "valueType": "xs:string",
+              "value": "Not used",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "Functions",
+          "value": [
+            {
+              "idShort": "Conveyor_Forward",
+              "valueType": "xs:string",
+              "value": "Drive conveyor belt forward (Q1)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Conveyor_Backward",
+              "valueType": "xs:string",
+              "value": "Drive conveyor belt backward (Q2)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Punch_Up",
+              "valueType": "xs:string",
+              "value": "Move punching machine up (Q3)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Punch_Down",
+              "valueType": "xs:string",
+              "value": "Move punching machine down (Q4)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Detect_Feed_Station",
+              "valueType": "xs:string",
+              "value": "Detect workpiece at feed station (I1)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Detect_Swap_Station",
+              "valueType": "xs:string",
+              "value": "Detect workpiece at swap station (I2)",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Pulse_Button",
+              "valueType": "xs:string",
+              "value": "Manual pulse button to move conveyor (I3)",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "DataConnection",
+      "id": "urn:uuid:e896d7e7-c63b-43c4-8a30-bd84edbac080",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "CpsId",
+          "valueType": "xs:string",
+          "value": "CPS-007",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Name",
+          "valueType": "xs:string",
+          "value": "Transportband_50464",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Description",
+          "valueType": "xs:string",
+          "value": "Transportador de correia 24V com contagem de pe\u00E7as, monitoramento de temperatura do motor e I/Os digitais para esta\u00E7\u00F5es de alimenta\u00E7\u00E3o/troca.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Status",
+          "valueType": "xs:string",
+          "value": "Parado",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Operations",
+          "valueType": "xs:string",
+          "value": "Transporte de pe\u00E7as entre esta\u00E7\u00F5es, detec\u00E7\u00E3o nas esta\u00E7\u00F5es de alimenta\u00E7\u00E3o/troca e opera\u00E7\u00E3o manual via bot\u00E3o de pulso.",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttServer",
+          "valueType": "xs:string",
+          "value": "broker.hivemq.com",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttPort",
+          "valueType": "xs:integer",
+          "value": "8884",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttClient",
+          "valueType": "xs:string",
+          "value": "PLC",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MqttBaseTopic",
+          "valueType": "xs:string",
+          "value": "cps7",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "APIData",
+          "valueType": "xs:string",
+          "value": "localhost:1872/api/cps7",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Sensors",
+      "id": "urn:uuid:2a8657eb-22d6-429e-8ff4-df93f40002a7",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "NominalVoltage_24V",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-BAJ135#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "V"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Rated Value"
+            },
+            {
+              "type": "Description",
+              "valueType": "xs:string",
+              "value": "Tens\u00E3o nominal de opera\u00E7\u00E3o do transportador (24V)."
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "24",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "PartCount",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAM445#001"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Measured Value",
+              "valueId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "urn:eclass:0173-1#02-AAB792#001"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Description",
+              "valueType": "xs:string",
+              "value": "Contagem total de pe\u00E7as transportadas."
+            }
+          ],
+          "valueType": "xs:integer",
+          "value": "5678",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "MotorTemperature",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAL097#002"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "\u00B0C"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Measured Value",
+              "valueId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "urn:eclass:0173-1#02-AAB792#001"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:dateTime",
+              "value": "2025-11-12T10:34:00Z"
+            },
+            {
+              "type": "Description",
+              "valueType": "xs:string",
+              "value": "Temperatura atual do motor do transportador."
+            }
+          ],
+          "valueType": "xs:decimal",
+          "value": "45.8",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "I1_FeedStation_Photo",
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Terminal 5"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Signal: I1"
+            },
+            {
+              "type": "Description",
+              "valueType": "xs:string",
+              "value": "Sensor fotoel\u00E9trico da esta\u00E7\u00E3o de alimenta\u00E7\u00E3o (I1)."
+            }
+          ],
+          "valueType": "xs:string",
+          "value": "Phototransistor feed station",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "I2_SwapStation_Photo",
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Terminal 6"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Signal: I2"
+            },
+            {
+              "type": "Description",
+              "valueType": "xs:string",
+              "value": "Sensor fotoel\u00E9trico da esta\u00E7\u00E3o de troca (I2)."
+            }
+          ],
+          "valueType": "xs:string",
+          "value": "Phototransistor swap station",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "I3_Pulse_Button",
+          "qualifiers": [
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Terminal 7"
+            },
+            {
+              "type": "Qualifier",
+              "valueType": "xs:string",
+              "value": "Signal: I3"
+            },
+            {
+              "type": "Description",
+              "valueType": "xs:string",
+              "value": "Bot\u00E3o de pulso manual para movimentar a esteira (I3)."
+            }
+          ],
+          "valueType": "xs:string",
+          "value": "Pulse button",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "Functions",
+      "id": "urn:uuid:e63b9c31-345a-4a6f-acf0-189d9af35ccd",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "conveyor_forward",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Esteira Avan\u00E7ar",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Aciona o motor do transportador para frente (Q1).",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "conveyor_backward",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Esteira Recuar",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Aciona o motor do transportador para tr\u00E1s (Q2).",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "detectar_feed_station",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Detectar Esta\u00E7\u00E3o de Alimenta\u00E7\u00E3o",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Leitura do fototransistor da esta\u00E7\u00E3o de alimenta\u00E7\u00E3o (I1).",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "detectar_swap_station",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Detectar Esta\u00E7\u00E3o de Troca",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Leitura do fototransistor da esta\u00E7\u00E3o de troca (I2).",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "pulse_button",
+          "value": [
+            {
+              "idShort": "Name",
+              "valueType": "xs:string",
+              "value": "Bot\u00E3o de Pulso",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "Description",
+              "valueType": "xs:string",
+              "value": "Leitura/uso do bot\u00E3o de pulso manual para movimentar a esteira (I3).",
+              "modelType": "Property"
+            },
+            {
+              "idShort": "AllowedStatuses",
+              "valueType": "xs:string",
+              "value": "espera|falha|manutencao",
+              "modelType": "Property"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ],
+  "conceptDescriptions": []
+}

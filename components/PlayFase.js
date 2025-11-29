@@ -50,7 +50,7 @@ const PlayFase = () => {
     alerts = [],
     startCPSById,
     stopCPSById,
-    showCPSDescription,
+    // showCPSDescription,  // <== removido pois não é mais usado
     acknowledgeAlert,
     unplugCPS,
   } = useCPSContext();
@@ -106,7 +106,7 @@ const PlayFase = () => {
       <h2>Play Phase</h2>
 
       <div className="added-cps-display-play">
-        <h3>Active CPS:</h3>
+        <h3>CPS in Play Phase:</h3>
         <ul className="cps-list-play">
           {addedCPS.length > 0 ? (
             addedCPS.map((cps) => {
@@ -124,45 +124,56 @@ const PlayFase = () => {
                     </span>
 
                     <div className="action-buttons">
+
+                      {/* PAUSE / STOP = parar monitoramento (não envia comando ao CPS) */}
                       <button
                         onClick={() => stopCPSById(cps.id)}
                         disabled={cps.status === 'Parado'}
                         className="stop-btn"
+                        title="Pausar monitoramento (CPS continua operando)"
                       >
                         Stop
                       </button>
+
+                      {/* RETOMAR MONITORAMENTO */}
                       <button
                         onClick={() => startCPSById(cps.id)}
                         disabled={cps.status === 'Rodando'}
                         className="restart-btn"
+                        title="Retomar monitoramento das mensagens MQTT"
                       >
                         Restart
                       </button>
+
+                      {/* Descrição continua igual */}
                       <button
-                        onClick={() => showCPSDescription(cps.nome)}
+                        onClick={() => window.open('http://localhost:1872/dashboard/overview', '_blank')}
                         className="desc-btn"
                       >
                         Description
                       </button>
+
+                      {/* Unplug continua igual */}
                       {String(cps.status).toLowerCase() === 'parado' && (
                         <button
                           className="exit-btn"
-                          title="Desligar e remover este CPS"
+                          title="Remove CPS Play Phase"
                           onClick={() => handleExit(cps)}
                         >
                           Unplug
                         </button>
                       )}
                     </div>
+
                   </div>
 
                   {/* === Funcionalidades === */}
                   <div className="func-table">
                     <div className="func-table-header">
-                      <div>Funcionalidade</div>
+                      <div>Operation</div>
                       <div>Status</div>
-                      <div>Última atualização</div>
-                      <div>Detalhes</div>
+                      <div>Last update</div>
+                      <div>Details</div>
                       <div></div>
                     </div>
 
@@ -197,10 +208,10 @@ const PlayFase = () => {
                             {showDetailsBtn && (
                               <button
                                 className="restart-btn"
-                                title="Ver detalhes do último alerta desta funcionalidade"
+                                title="View details of the latest alert for this feature."
                                 onClick={() => openDetailsForAlert(cps.nome, alertForFeat)}
                               >
-                                Detalhes
+                                Details
                               </button>
                             )}
                           </div>
@@ -212,7 +223,7 @@ const PlayFase = () => {
               );
             })
           ) : (
-            <li className="no-cps">Nenhum CPS ativo.</li>
+            <li className="no-cps">No active CPS...</li>
           )}
         </ul>
       </div>
@@ -283,16 +294,16 @@ const PlayFase = () => {
             )}
 
             <div className="modal-footer">
-              <button className="modal-cancel-btn" onClick={closeModal}>Fechar</button>
+              <button className="modal-cancel-btn" onClick={closeModal}>Close</button>
               {modalAlert && (
                 <>
                   {activeTab === 'json' && (
                     <button className="desc-btn" onClick={copyJSON} title="Copiar JSON">
-                      Copiar JSON
+                      Copy JSON
                     </button>
                   )}
                   <button className="modal-confirm-btn" onClick={handleAck} title="Reconhecer e remover alerta">
-                    Reconhecer
+                    Cognize
                   </button>
                 </>
               )}
